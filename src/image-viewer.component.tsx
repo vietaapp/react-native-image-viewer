@@ -60,6 +60,22 @@ export default class ImageViewer extends React.Component<Props, State> {
   }
 
   public componentDidUpdate(prevProps: Props, prevState: State) {
+    // Reload state if imageUrls changed
+    if (this.props.imageUrls.length !== prevProps.imageUrls.length ){
+      const index = prevState.currentShowIndex;
+      this.loadedIndex = new Map<number, boolean>();
+      this.handleLongPressWithIndex = new Map<number, any>();
+      this.imageRefs = [];
+      this.setState({
+         ... new State(),
+        currentShowIndex: index,
+         }, () => {
+        const initProps = { ...this.props, index };
+        this.init(initProps);
+      });
+      return;
+    }
+
     if (prevProps.index !== this.props.index) {
       // 立刻预加载要看的图
       this.loadImage(this.props.index || 0);
@@ -98,7 +114,6 @@ export default class ImageViewer extends React.Component<Props, State> {
     this.setState(
       {
         currentShowIndex: nextProps.index,
-        prevIndexProp: nextProps.index || 0,
         imageSizes
       },
       () => {
