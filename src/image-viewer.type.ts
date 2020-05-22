@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Image, ImageURISource, Text, View, ViewStyle } from 'react-native';
+import { Image, Text, View, ViewStyle } from 'react-native';
+import { ImageZoomProps } from 'react-native-image-pan-zoom/built/image-zoom/image-zoom.type'
 import { simpleStyle } from './image-viewer.style';
 
 interface IOnMove {
@@ -98,7 +99,7 @@ export class Props {
    */
   public pageAnimateTime?: number = 100;
 
-  /** 
+  /**
    * 是否启用原生动画驱动
    * Whether to use the native code to perform animations.
    */
@@ -298,6 +299,8 @@ export interface IImageInfo {
    * 初始是否不超高 TODO:
    */
   freeWidth?: boolean;
+
+  imageZoomProps?: ImageZoomProps;
 }
 
 export interface IImageSize {
