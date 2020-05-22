@@ -522,6 +522,8 @@ export default class ImageViewer extends React.Component<Props, State> {
             height
           };
 
+          image.props.current = index === this.state.currentShowIndex;
+
           if (typeof image.props.source === 'number') {
             // source = require(..), doing nothing
           } else {
