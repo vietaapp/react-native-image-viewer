@@ -457,7 +457,7 @@ export default class ImageViewer extends React.Component<Props, State> {
     const screenWidth = this.width;
     const screenHeight = this.height;
 
-    const ImageElements = this.props.imageUrls.map((image, index) => {
+    const renderImageElement = (image: IImageInfo, index: number) => {
       if ((this.state.currentShowIndex || 0) > index + 1 || (this.state.currentShowIndex || 0) < index - 1) {
         return <View key={index} style={{ width: screenWidth, height: screenHeight }} />;
       }
@@ -608,6 +608,10 @@ export default class ImageViewer extends React.Component<Props, State> {
             </Wrapper>
           );
       }
+    };
+
+    const ImageElements = this.props.imageUrls.map((image, index) => {
+      return <Animated.View style={{ direction: 'ltr' }}>{renderImageElement(image, index)}</Animated.View>
     });
 
     return (
@@ -626,15 +630,16 @@ export default class ImageViewer extends React.Component<Props, State> {
               <View>{this!.props!.renderArrowRight!()}</View>
             </TouchableWithoutFeedback>
           </View>
-
-          <Animated.View
-            style={{
-              ...this.styles.moveBox,
-              transform: [{ translateX: this.positionX }],
-              width: this.width * this.props.imageUrls.length
-            }}
-          >
-            {ImageElements}
+          <Animated.View style={{ direction: this.props.reverse ? 'rtl' : 'ltr' }}>
+            <Animated.View
+              style={{
+                ...this.styles.moveBox,
+                transform: [{ translateX: this.positionX }],
+                width: this.width * this.props.imageUrls.length
+              }}
+            >
+              {ImageElements}
+            </Animated.View>
           </Animated.View>
           {this!.props!.renderIndicator!((this.state.currentShowIndex || 0) + 1, this.props.imageUrls.length)}
 
