@@ -17,6 +17,8 @@ export class Props {
    */
   public show?: boolean = false;
 
+  public reverse?: boolean = false;
+
   /**
    * 图片数组
    */

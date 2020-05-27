@@ -131,6 +131,11 @@ export default class ImageViewer extends React.Component<Props, State> {
       }
     );
   }
+
+  public isReverse = () : boolean => {
+    return I18nManager.isRTL || !!this.props.reverse;
+  }
+
   /**
    * reset Image scale and position
    */
@@ -142,7 +147,7 @@ export default class ImageViewer extends React.Component<Props, State> {
    */
   public jumpToCurrentImage() {
     // 跳到当前图的位置
-    this.positionXNumber = this.width * (this.state.currentShowIndex || 0) * (I18nManager.isRTL ? 1 : -1);
+    this.positionXNumber = this.width * (this.state.currentShowIndex || 0) * (this.isReverse() ? 1 : -1);
     this.standardPositionX = this.positionXNumber;
     this.positionX.setValue(this.positionXNumber);
   }
@@ -248,7 +253,7 @@ export default class ImageViewer extends React.Component<Props, State> {
     this.positionXNumber = this.standardPositionX + offsetX;
     this.positionX.setValue(this.positionXNumber);
 
-    const offsetXRTL = !I18nManager.isRTL ? offsetX : -offsetX;
+    const offsetXRTL = !this.isReverse() ? offsetX : -offsetX;
 
     if (offsetXRTL < 0) {
       if (this!.state!.currentShowIndex || 0 < this.props.imageUrls.length - 1) {
@@ -265,11 +270,11 @@ export default class ImageViewer extends React.Component<Props, State> {
    * 手势结束，但是没有取消浏览大图
    */
   public handleResponderRelease = (vx: number = 0) => {
-    const vxRTL = I18nManager.isRTL ? -vx : vx;
-    const isLeftMove = I18nManager.isRTL
+    const vxRTL = this.isReverse() ? -vx : vx;
+    const isLeftMove = this.isReverse()
       ? this.positionXNumber - this.standardPositionX < -(this.props.flipThreshold || 0)
       : this.positionXNumber - this.standardPositionX > (this.props.flipThreshold || 0);
-    const isRightMove = I18nManager.isRTL
+    const isRightMove = this.isReverse()
       ? this.positionXNumber - this.standardPositionX > (this.props.flipThreshold || 0)
       : this.positionXNumber - this.standardPositionX < -(this.props.flipThreshold || 0);
 
@@ -315,7 +320,7 @@ export default class ImageViewer extends React.Component<Props, State> {
       return;
     }
 
-    this.positionXNumber = !I18nManager.isRTL
+    this.positionXNumber = !this.isReverse()
       ? this.standardPositionX + this.width
       : this.standardPositionX - this.width;
     this.standardPositionX = this.positionXNumber;
@@ -349,7 +354,7 @@ export default class ImageViewer extends React.Component<Props, State> {
       return;
     }
 
-    this.positionXNumber = !I18nManager.isRTL
+    this.positionXNumber = !this.isReverse()
       ? this.standardPositionX - this.width
       : this.standardPositionX + this.width;
     this.standardPositionX = this.positionXNumber;
