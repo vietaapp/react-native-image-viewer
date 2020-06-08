@@ -17,6 +17,7 @@ import {
 } from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import styles from './image-viewer.style';
+import * as _ from 'lodash';
 import { IImageInfo, IImageSize, Props, State } from './image-viewer.type';
 
 export default class ImageViewer extends React.Component<Props, State> {
@@ -133,6 +134,7 @@ export default class ImageViewer extends React.Component<Props, State> {
   }
 
   public isReverse = () : boolean => {
+    // return false;
     return I18nManager.isRTL || !!this.props.reverse;
   }
 
@@ -146,8 +148,12 @@ export default class ImageViewer extends React.Component<Props, State> {
    * 调到当前看图位置
    */
   public jumpToCurrentImage() {
-    // 跳到当前图的位置
-    this.positionXNumber = this.width * (this.state.currentShowIndex || 0) * (this.isReverse() ? 1 : -1);
+    if (this.isReverse()) {
+      this.positionXNumber = (-1 * (this.props.imageUrls.length - 1) * this.width) + (this.width * (this.state.currentShowIndex || 0));
+    } else {
+      this.positionXNumber = this.width * (this.state.currentShowIndex || 0) * (this.isReverse() ? -1 : -1);
+    }
+
     this.standardPositionX = this.positionXNumber;
     this.positionX.setValue(this.positionXNumber);
   }
@@ -253,7 +259,7 @@ export default class ImageViewer extends React.Component<Props, State> {
     this.positionXNumber = this.standardPositionX + offsetX;
     this.positionX.setValue(this.positionXNumber);
 
-    const offsetXRTL = !this.isReverse() ? offsetX : -offsetX;
+    const offsetXRTL = true || !this.isReverse() ? offsetX : -offsetX;
 
     if (offsetXRTL < 0) {
       if (this!.state!.currentShowIndex || 0 < this.props.imageUrls.length - 1) {
@@ -459,7 +465,7 @@ export default class ImageViewer extends React.Component<Props, State> {
 
     const renderImageElement = (image: IImageInfo, index: number) => {
       if ((this.state.currentShowIndex || 0) > index + 1 || (this.state.currentShowIndex || 0) < index - 1) {
-        return <View key={index} style={{ width: screenWidth, height: screenHeight }} />;
+        return <View key={index} style={{ width: screenWidth, height: screenHeight, backgroundColor: 'blue', alignItems: 'center', justifyContent: 'center' }}><Text>{index}</Text></View>;
       }
 
       if (!this.handleLongPressWithIndex.has(index)) {
@@ -543,6 +549,7 @@ export default class ImageViewer extends React.Component<Props, State> {
           };
 
           image.props.current = index === this.state.currentShowIndex;
+          image.props.index = index;
 
           if (typeof image.props.source === 'number') {
             // source = require(..), doing nothing
@@ -611,7 +618,8 @@ export default class ImageViewer extends React.Component<Props, State> {
     };
 
     const ImageElements = this.props.imageUrls.map((image, index) => {
-      return <Animated.View style={{ direction: 'ltr' }}>{renderImageElement(image, index)}</Animated.View>
+      return renderImageElement(image, index);
+      // return <Animated.View style={{ flexDirection: 'column' }}>{renderImageElement(image, index)}</Animated.View>
     });
 
     return (
@@ -619,22 +627,32 @@ export default class ImageViewer extends React.Component<Props, State> {
         <Animated.View style={{ ...this.styles.container, opacity: this.fadeAnim }}>
           {this!.props!.renderHeader!(this.state.currentShowIndex)}
 
-          <View style={this.styles.arrowLeftContainer}>
-            <TouchableWithoutFeedback onPress={this.goBack}>
-              <View>{this!.props!.renderArrowLeft!()}</View>
-            </TouchableWithoutFeedback>
-          </View>
+          {false && (
+            <View style={this.styles.arrowLeftContainer}>
+              <TouchableWithoutFeedback onPress={this.goBack}>
+                <View>{this!.props!.renderArrowLeft!()}</View>
+              </TouchableWithoutFeedback>
+            </View>
+          )}
 
-          <View style={this.styles.arrowRightContainer}>
-            <TouchableWithoutFeedback onPress={this.goNext}>
-              <View>{this!.props!.renderArrowRight!()}</View>
-            </TouchableWithoutFeedback>
-          </View>
-          <Animated.View style={{ direction: this.props.reverse ? 'rtl' : 'ltr' }}>
+          {false && (
+            <View style={this.styles.arrowRightContainer}>
+              <TouchableWithoutFeedback onPress={this.goNext}>
+                <View>{this!.props!.renderArrowRight!()}</View>
+              </TouchableWithoutFeedback>
+            </View>
+          )}
+          <Animated.View>
             <Animated.View
               style={{
                 ...this.styles.moveBox,
-                transform: [{ translateX: this.positionX }],
+                flexDirection: this.isReverse() ? 'row-reverse' : 'row',
+                backgroundColor: 'red',
+                transform: [
+                  {
+                    translateX: this.positionX,
+                  }
+                ],
                 width: this.width * this.props.imageUrls.length
               }}
             >
