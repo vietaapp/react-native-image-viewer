@@ -17,7 +17,6 @@ import {
 } from 'react-native';
 import ImageZoom from 'react-native-image-pan-zoom';
 import styles from './image-viewer.style';
-import * as _ from 'lodash';
 import { IImageInfo, IImageSize, Props, State } from './image-viewer.type';
 
 export default class ImageViewer extends React.Component<Props, State> {
@@ -134,7 +133,6 @@ export default class ImageViewer extends React.Component<Props, State> {
   }
 
   public isReverse = () : boolean => {
-    // return false;
     return I18nManager.isRTL || !!this.props.reverse;
   }
 
@@ -465,7 +463,7 @@ export default class ImageViewer extends React.Component<Props, State> {
 
     const renderImageElement = (image: IImageInfo, index: number) => {
       if ((this.state.currentShowIndex || 0) > index + 1 || (this.state.currentShowIndex || 0) < index - 1) {
-        return <View key={index} style={{ width: screenWidth, height: screenHeight, backgroundColor: 'blue', alignItems: 'center', justifyContent: 'center' }}><Text>{index}</Text></View>;
+        return <View key={index} style={{ width: screenWidth, height: screenHeight }} />;
       }
 
       if (!this.handleLongPressWithIndex.has(index)) {
@@ -549,7 +547,6 @@ export default class ImageViewer extends React.Component<Props, State> {
           };
 
           image.props.current = index === this.state.currentShowIndex;
-          image.props.index = index;
 
           if (typeof image.props.source === 'number') {
             // source = require(..), doing nothing
@@ -619,7 +616,6 @@ export default class ImageViewer extends React.Component<Props, State> {
 
     const ImageElements = this.props.imageUrls.map((image, index) => {
       return renderImageElement(image, index);
-      // return <Animated.View style={{ flexDirection: 'column' }}>{renderImageElement(image, index)}</Animated.View>
     });
 
     return (
@@ -647,7 +643,6 @@ export default class ImageViewer extends React.Component<Props, State> {
               style={{
                 ...this.styles.moveBox,
                 flexDirection: this.isReverse() ? 'row-reverse' : 'row',
-                backgroundColor: 'red',
                 transform: [
                   {
                     translateX: this.positionX,

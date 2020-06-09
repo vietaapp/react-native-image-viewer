@@ -19,8 +19,6 @@
   "license": "MIT",
   "dependencies": {
     "@babel/runtime": "^7.10.2",
-    "@types/lodash": "^4.14.155",
-    "lodash": "^4.17.15",
     "react-native-image-pan-zoom": "^2.1.12"
   },
   "peerDependencies": {
