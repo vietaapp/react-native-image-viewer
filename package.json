@@ -1,6 +1,6 @@
 {
   "name": "@vietaapp/react-native-image-zoom-viewer",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "react native image viewer,大图浏览",
   "main": "built/index.js",
   "types": "built/index.d.ts",
@@ -18,7 +18,6 @@
   "author": "ascoders",
   "license": "MIT",
   "dependencies": {
-    "@babel/runtime": "^7.10.2",
     "react-native-image-pan-zoom": "^2.1.12"
   },
   "peerDependencies": {
