@@ -146,11 +146,17 @@ export default class ImageViewer extends React.Component<Props, State> {
    * 调到当前看图位置
    */
   public jumpToCurrentImage() {
+    let newPositionXNumber: number;
+
     if (this.isReverse()) {
-      this.positionXNumber = (-1 * (this.props.imageUrls.length - 1) * this.width) + (this.width * (this.state.currentShowIndex || 0));
+      newPositionXNumber = (-1 * (this.props.imageUrls.length - 1) * this.width) + (this.width * (this.state.currentShowIndex || 0));
     } else {
-      this.positionXNumber = this.width * (this.state.currentShowIndex || 0) * (this.isReverse() ? -1 : -1);
+      newPositionXNumber = this.width * (this.state.currentShowIndex || 0) * (this.isReverse() ? -1 : -1);
     }
+
+    if (newPositionXNumber === this.positionXNumber) return;
+
+    this.positionXNumber = newPositionXNumber;
 
     this.standardPositionX = this.positionXNumber;
     this.positionX.setValue(this.positionXNumber);
@@ -257,7 +263,7 @@ export default class ImageViewer extends React.Component<Props, State> {
     this.positionXNumber = this.standardPositionX + offsetX;
     this.positionX.setValue(this.positionXNumber);
 
-    const offsetXRTL = true || !this.isReverse() ? offsetX : -offsetX;
+    const offsetXRTL = !this.isReverse() ? offsetX : -offsetX;
 
     if (offsetXRTL < 0) {
       if (this!.state!.currentShowIndex || 0 < this.props.imageUrls.length - 1) {
